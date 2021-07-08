@@ -153,7 +153,29 @@ class XDPAGE2 extends StatelessWidget {
                 PageLinkInfo(
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => XDPAGE4(key: UniqueKey(),),
+                  pageBuilder: FutureBuilder(
+                    future: FlutterBluetoothSerial.instance.requestEnable(),
+                    builder: (context, future) {
+                      if (future.connectionState == ConnectionState.waiting) {
+                        return Scaffold(
+                          body: Container(
+                            height: double.infinity,
+                            child: Center(
+                              child: Icon(
+                                Icons.bluetooth_disabled,
+                                size: 200.0,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        );
+                      } else if (future.connectionState == ConnectionState.done) {
+                        return XDPAGE4(key: UniqueKey(),);
+                      } else {
+                        return XDPAGE4(key: UniqueKey(),);
+                      }
+                    },
+                  ),//() => XDPAGE4(key: UniqueKey(),),
                 ),
               ],
               child: Container(
