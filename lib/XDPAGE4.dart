@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import './XDPAGE2.dart';
+import './device.dart';
+import './connection.dart';
 import 'package:adobe_xd/page_link.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class XDPAGE4 extends StatelessWidget {
   XDPAGE4({
@@ -95,6 +98,19 @@ class XDPAGE4 extends StatelessWidget {
                 letterSpacing: 0.3,
               ),
               textAlign: TextAlign.left,
+            ),
+            child: SelectBondedDevicePage(
+              onCahtPage: (device1) {
+                BluetoothDevice device = device1;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return XDPAGE2(key: UniqueKey(), dash: () {  },server: device);
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ],
