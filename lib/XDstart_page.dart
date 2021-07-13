@@ -7,6 +7,8 @@ class XDstart_page extends StatelessWidget {
   XDstart_page({
     required Key key,
   }) : super(key: key);
+
+  get device => null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +61,7 @@ class XDstart_page extends StatelessWidget {
                 PageLinkInfo(
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => XDPAGE2(key: UniqueKey(), dash: () {  },),
+                  pageBuilder: () => XDPAGE2(key: UniqueKey(), dash: () {  }, server: device,),
                 ),
               ],
               child: Text.rich(

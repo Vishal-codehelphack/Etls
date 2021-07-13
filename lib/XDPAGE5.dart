@@ -10,6 +10,8 @@ class XDPAGE5 extends StatelessWidget {
   XDPAGE5({
     required Key key,
   }) : super(key: key);
+
+  get device => null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -280,7 +282,7 @@ class XDPAGE5 extends StatelessWidget {
                 PageLinkInfo(
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => XDPAGE2(key: UniqueKey(), dash: () {  },),
+                  pageBuilder: () => XDPAGE2(key: UniqueKey(), dash: () {  }, server: device,),
                 ),
               ],
               child: Text(

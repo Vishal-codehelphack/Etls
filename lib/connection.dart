@@ -12,7 +12,7 @@ class SelectBondedDevicePage extends StatefulWidget {
   final Function onCahtPage;
 
   const SelectBondedDevicePage(
-      {this.checkAvailability = true, @required this.onCahtPage});
+      {this.checkAvailability = true, required this.onCahtPage});
 
   @override
   _SelectBondedDevicePage createState() => new _SelectBondedDevicePage();
@@ -29,11 +29,11 @@ class _DeviceWithAvailability extends BluetoothDevice {
   _DeviceAvailability availability;
   int rssi;
 
-  _DeviceWithAvailability(this.device, this.availability, [this.rssi]);
+  _DeviceWithAvailability(this.device, this.availability, this.rssi);
 }
 
 class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
-  List<_DeviceWithAvailability> devices = List<_DeviceWithAvailability>();
+  List<_DeviceWithAvailability> devices = <_DeviceWithAvailability>[];
 
   // Availability
   StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;

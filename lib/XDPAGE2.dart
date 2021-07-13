@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import './XDPAGE3.dart';
@@ -15,7 +17,7 @@ class XDPAGE2 extends StatelessWidget {
   XDPAGE2({
     required Key key,
     required this.dash,
-    this.server
+    required this.server
   }) : super(key: key);
 
   BluetoothConnection connection;
@@ -25,10 +27,13 @@ class XDPAGE2 extends StatelessWidget {
 
   bool isDisconnecting = false;
 
+  bool get mounted => true;
+
   @override
   void initState() {
     super.initState();
 
+    var widget;
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Connected to the device');
       connection = _connection;
@@ -37,7 +42,7 @@ class XDPAGE2 extends StatelessWidget {
         isDisconnecting = false;
       });
 
-      connection.input.listen(_onDataReceived).onDone(() {
+      connection.input!.listen(_onDataReceived).onDone(() {
         // Example: Detect which side closed the connection
         // There should be `isDisconnecting` flag to show are we are (locally)
         // in middle of disconnecting process, should be set before calling
@@ -65,7 +70,6 @@ class XDPAGE2 extends StatelessWidget {
     if (isConnected) {
       isDisconnecting = true;
       connection.dispose();
-      connection = null;
     }
 
     super.dispose();
@@ -212,28 +216,30 @@ class XDPAGE2 extends StatelessWidget {
                 PageLinkInfo(
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: FutureBuilder(
-                    future: FlutterBluetoothSerial.instance.requestEnable(),
-                    builder: (context, future) {
-                      if (future.connectionState == ConnectionState.waiting) {
-                        return Scaffold(
-                          body: Container(
-                            height: double.infinity,
-                            child: Center(
-                              child: Icon(
-                                Icons.bluetooth_disabled,
-                                size: 200.0,
-                                color: Colors.blue,
+                  pageBuilder: widget(
+                    child: FutureBuilder(
+                      future: FlutterBluetoothSerial.instance.requestEnable(),
+                      builder: (context, future) {
+                        if (future.connectionState == ConnectionState.waiting) {
+                          return Scaffold(
+                            body: Container(
+                              height: double.infinity,
+                              child: Center(
+                                child: Icon(
+                                  Icons.bluetooth_disabled,
+                                  size: 200.0,
+                                  color: Colors.blue,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      } else if (future.connectionState == ConnectionState.done) {
-                        return XDPAGE4(key: UniqueKey(),);
-                      } else {
-                        return XDPAGE4(key: UniqueKey(),);
-                      }
-                    },
+                          );
+                        } else if (future.connectionState == ConnectionState.done) {
+                          return XDPAGE4(key: UniqueKey(),);
+                        } else {
+                          return XDPAGE4(key: UniqueKey(),);
+                        }
+                      },
+                    ),
                   ),//() => XDPAGE4(key: UniqueKey(),),
                 ),
               ],
@@ -257,15 +263,13 @@ class XDPAGE2 extends StatelessWidget {
                 color: const Color(0xffaf240f),
                 border: Border.all(width: 1.0, color: const Color(0xff707070)),
               ),
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: isConnected ? () => _sendMessage('0') : null,
-                  child: const Text('J1'),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
                 ),
-              ],
+                onPressed: isConnected ? () => _sendMessage('0') : null,
+                child: const Text('J1'),
+              ),
             ),
           ),
           Pinned.fromPins(
@@ -277,15 +281,13 @@ class XDPAGE2 extends StatelessWidget {
                 color: const Color(0xffaf240f),
                 border: Border.all(width: 1.0, color: const Color(0xff707070)),
               ),
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: isConnected ? () => _sendMessage('1') : null,
-                  child: const Text('J2'),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
                 ),
-              ],
+                onPressed: isConnected ? () => _sendMessage('1') : null,
+                child: const Text('J2'),
+              ),
             ),
           ),
           Pinned.fromPins(
@@ -297,15 +299,13 @@ class XDPAGE2 extends StatelessWidget {
                 color: const Color(0xffaf240f),
                 border: Border.all(width: 1.0, color: const Color(0xff707070)),
               ),
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: isConnected ? () => _sendMessage('2') : null,
-                  child: const Text('J3'),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
                 ),
-              ],
+                onPressed: isConnected ? () => _sendMessage('2') : null,
+                child: const Text('J3'),
+              ),
             ),
           ),
           Pinned.fromPins(
@@ -317,15 +317,13 @@ class XDPAGE2 extends StatelessWidget {
                 color: const Color(0xffaf240f),
                 border: Border.all(width: 1.0, color: const Color(0xff707070)),
               ),
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: isConnected ? () => _sendMessage('3') : null,
-                  child: const Text('J4'),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20),
                 ),
-              ],
+                onPressed: isConnected ? () => _sendMessage('3') : null,
+                child: const Text('J4'),
+              ),
             ),
           ),
           Pinned.fromPins(
@@ -432,16 +430,18 @@ class XDPAGE2 extends StatelessWidget {
 
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text);
-        await connection.output.allSent;
-        print(text + " sent sucessfully")
+        connection.output.add(utf8.encode(text),
+        await connection.output.allSent);
+        print(text + " sent sucessfully");
       } catch (e) {
         // Ignore error, but notify state
         setState(() {});
-        print("Error occured while sending data")
+        print("Error occured while sending data");
       }
     }
   }
+
+  void setState(Null Function() param0) {}
 }
 
 const String _svg_cj8cyc =

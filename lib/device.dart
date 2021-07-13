@@ -5,7 +5,7 @@ class BluetoothDeviceListEntry extends StatelessWidget {
   final Function onTap;
   final BluetoothDevice device;
 
-  BluetoothDeviceListEntry({this.onTap, @required this.device});
+  BluetoothDeviceListEntry({required this.onTap, required this.device});
 
   @override
   Widget build(BuildContext context) {
