@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import './XDPAGE2.dart';
-import './device.dart';
 import './connection.dart';
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -91,7 +90,9 @@ class XDPAGE4 extends StatelessWidget {
           Pinned.fromPins(
             Pin(size: 204.0, middle: 0.3511),
             Pin(size: 30.0, middle: 0.2321),
-            child: Text(
+            child: Stack(
+              children:<Widget>[
+                Text(
               '   Near by devices',
               style: TextStyle(
                 fontFamily: 'Sitka Heading',
@@ -101,7 +102,7 @@ class XDPAGE4 extends StatelessWidget {
               ),
               textAlign: TextAlign.left,
             ),
-            child: SelectBondedDevicePage(
+            SelectBondedDevicePage(
               onCahtPage: (device1) {
                 BluetoothDevice device = device1;
                 Navigator.push(
@@ -113,6 +114,8 @@ class XDPAGE4 extends StatelessWidget {
                   ),
                 );
               },
+            ),
+              ]
             ),
           ),
         ],
