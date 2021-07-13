@@ -27,17 +27,17 @@ enum _DeviceAvailability {
 class _DeviceWithAvailability extends BluetoothDevice {
   BluetoothDevice device;
   _DeviceAvailability availability;
-  int rssi;
 
-  _DeviceWithAvailability(this.device, this.availability, this.rssi);
+
+  _DeviceWithAvailability(this.device, this.availability);
 }
 
 class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
   List<_DeviceWithAvailability> devices = <_DeviceWithAvailability>[];
 
   // Availability
-  StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;
-  bool _isDiscovering;
+   late StreamSubscription<BluetoothDiscoveryResult> _discoveryStreamSubscription;
+ late  bool _isDiscovering;
 
   _SelectBondedDevicePage();
 
@@ -103,7 +103,7 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
   @override
   void dispose() {
     // Avoid memory leak (`setState` after dispose) and cancel discovery
-    _discoveryStreamSubscription?.cancel();
+    _discoveryStreamSubscription.cancel();
 
     super.dispose();
   }

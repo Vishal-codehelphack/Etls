@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
@@ -11,7 +12,7 @@ import './connection.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
-class XDPAGE2 extends StatelessWidget {
+class XDPAGE2 extends StatefulWidget {
   final VoidCallback dash;
   final BluetoothDevice server;
   XDPAGE2({
@@ -20,9 +21,15 @@ class XDPAGE2 extends StatelessWidget {
     required this.server
   }) : super(key: key);
 
-  BluetoothConnection connection;
+  @override
+  _XDPAGE2State createState() => _XDPAGE2State();
+}
+
+class _XDPAGE2State extends State<XDPAGE2> {
+  late BluetoothConnection connection;
 
   bool isConnecting = true;
+
   bool get isConnected => connection != null && connection.isConnected;
 
   bool isDisconnecting = false;
@@ -87,7 +94,7 @@ class XDPAGE2 extends StatelessWidget {
             child:
                 // Adobe XD layer: 'FAB' (group)
                 GestureDetector(
-              onTap: () => dash.call(),
+              onTap: () => widget.dash.call(),
               child: PageLink(
                 links: [
                   PageLinkInfo(
@@ -216,31 +223,7 @@ class XDPAGE2 extends StatelessWidget {
                 PageLinkInfo(
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: widget(
-                    child: FutureBuilder(
-                      future: FlutterBluetoothSerial.instance.requestEnable(),
-                      builder: (context, future) {
-                        if (future.connectionState == ConnectionState.waiting) {
-                          return Scaffold(
-                            body: Container(
-                              height: double.infinity,
-                              child: Center(
-                                child: Icon(
-                                  Icons.bluetooth_disabled,
-                                  size: 200.0,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                          );
-                        } else if (future.connectionState == ConnectionState.done) {
-                          return XDPAGE4(key: UniqueKey(),);
-                        } else {
-                          return XDPAGE4(key: UniqueKey(),);
-                        }
-                      },
-                    ),
-                  ),//() => XDPAGE4(key: UniqueKey(),),
+                  pageBuilder: () => XDPAGE4(key: UniqueKey(),),
                 ),
               ],
               child: Container(
@@ -430,9 +413,13 @@ class XDPAGE2 extends StatelessWidget {
 
     if (text.length > 0) {
       try {
-        connection.output.add(utf8.encode(text),
-        await connection.output.allSent);
-        print(text + " sent sucessfully");
+        connection = await BluetoothConnection.toAddress(widget.server.address);
+        print('Connected to the device');
+
+        connection.input!.listen((Uint8List data) {
+          //Data entry point
+          print(ascii.decode(data));
+        });
       } catch (e) {
         // Ignore error, but notify state
         setState(() {});
@@ -441,7 +428,10 @@ class XDPAGE2 extends StatelessWidget {
     }
   }
 
-  void setState(Null Function() param0) {}
+
+
+  void _onDataReceived(Uint8List event) {
+  }
 }
 
 const String _svg_cj8cyc =
